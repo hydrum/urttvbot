@@ -1,0 +1,23 @@
+# GTV-Bot-LITE
+
+by Biddle, Gost0r & SailorMoon
+
+
+#HEADADMIN
+!die
+
+#PUBLIC
+!gtv upcoming
+!gtv last
+
+#ADMIN
+!gtv add <TeamA> <TeamB> <date> <time> <league> <gametype>
+!gtv remove <id>
+!gtv delete <id>
+!gtv done <id> <score> <demo>
+!gtv free
+!gtv list
+!gtv servers
+!gtv take <serverip>
+!gtv streamadd <id> <link>
+!gtv streamremove <id>
