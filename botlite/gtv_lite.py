@@ -12,7 +12,7 @@ REALNAME="GTV-Bot"
 text=""
 channel="#urt-tv"
 OWNER="~gost0r@Gost0r.users.quakenet.org"
-admins="~Gost0r"
+admins="~Biddle ~rasta|blaster ~sC`SailorMoon ~Gost0r ~BlapecoOl"
 
 qauth = "GTV-Bot xxx"
 
