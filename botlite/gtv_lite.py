@@ -14,6 +14,15 @@ channel="#urt-tv"
 OWNER="~gost0r@Gost0r.users.quakenet.org"
 admins="~Gost0r"
 
+qauth = "GTV-Bot xxx"
+
+pubchan = "#urt-tv"
+privchan = "xxx"
+altchan = "xxx"
+
+dbfile = "gtv_lite.txt"
+
+
 stop = 0
 result = 0
 spamnum = 0
@@ -41,15 +50,13 @@ while True:
             irc.send('PONG ' + data[1] + '\n')
             
         if "MOTD" in text:
-            irc.send ( 'PRIVMSG Q@CServe.quakenet.org :AUTH GTV-Bot 6FjL-XiXav\n')
-        #    irc.send ( 'PRIVMSG Q@CServe.quakenet.org :AUTH UrT-TVbot TIv!6CjCnz\n')
+            irc.send ( 'PRIVMSG Q@CServe.quakenet.org :AUTH ' + qauth + '\n')
             sleep(1)
             irc.send ( 'MODE ' + NICK + ' :+x \n')
-            irc.send ( 'JOIN #urt-tv\n')
-            irc.send ( 'JOIN #urt-tv.admin\n')
-        #    irc.send ( 'JOIN #urban-zone.radio uzr\n')
-        #    irc.send ( 'JOIN #urt-tv.bot\n')
-
+            irc.send ( 'JOIN ' + pubchan + '\n')
+            irc.send ( 'JOIN ' + privchan + '\n')
+            irc.send ( 'JOIN ' + altchan + '\n')
+            
         if "PRIVMSG" in text:
             getnick = data[0].split("!")
             nick = getnick[0].replace(":","")
@@ -64,12 +71,12 @@ while True:
 
             if data[3] == ":!gtv":
                 channel = data[2]
-                if "#urt-tv" in data[2]:
+                if pubchan in data[2]:
                     if len(data) <= 4:
                         irc.send('PRIVMSG ' + channel + ' :GTV parameter missing: try !gtv help\n')
                         
                     elif data[4] == "upcoming":
-                        fileHandle = open('gtv_lite.txt')
+                        fileHandle = open(dbfile)
                         read = fileHandle.read()
                         fileHandle.close()
                         read = read.split("\n")
@@ -91,7 +98,7 @@ while True:
                                 irc.send('PRIVMSG ' + channel + ' :No upcoming GTV\n')
                                 
                     elif data[4] == "last":
-                        fileHandle = open('gtv_lite.txt')
+                        fileHandle = open(dbfile)
                         read = fileHandle.read()
                         fileHandle.close()
                         read = read.split("\n")
@@ -118,14 +125,14 @@ while True:
                                 
                             
 
-                if data[2] == "#urt-tv.admin": ############################# CHANGE TO ADMIN
+                if (data[2] == privchan) or (data[2] == altchan):
                     if len(data) <= 4:
                         pass
                     
                     elif data[4] == "add":
                         if len(data) == 11:
                             addline = 'PRIV ' + str(data[5]) + ' ' + str(data[6]) + ' ' + str(data[7]) + ' ' + str(data[8]) + ' ' + str(data[9]) + ' ' + str(data[10]) + ' 0 0 0 0'
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) == 0:
@@ -133,7 +140,7 @@ while True:
                             else:
                                 lines.append('\n' + addline)
                             swrite = ''
-                            f = open('gtv_lite.txt', 'w')
+                            f = open(dbfile, 'w')
                             for i in range(0,len(lines)):
                                 swrite = swrite + lines[i]
                             f.write(swrite)
@@ -144,14 +151,14 @@ while True:
 
                     elif data[4] == "delete":
                         if len(data) == 6:
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) > int(data[5]):
                                 changeline = lines[int(data[5])].split(" ")
                                 lines[int(data[5])] =  'DEL ' + changeline[1] + ' ' + changeline[2] + ' ' + changeline[3] + ' ' + changeline[4] + ' ' + changeline[5] + ' ' + changeline[6] + ' ' + changeline[7] + ' ' + changeline[8] + ' ' + changeline[9] + ' ' + changeline[10]
                                 swrite = ''
-                                f = open('gtv_lite.txt', 'w')
+                                f = open(dbfile, 'w')
                                 for i in range(0,len(lines)):
                                     swrite = swrite + lines[i]
                                 f.write(swrite)
@@ -162,14 +169,14 @@ while True:
 
                     elif data[4] == "done":
                         if len(data) == 8:
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) > int(data[5]):
                                 changeline = lines[int(data[5])].split(" ")
                                 lines[int(data[5])] =  'DONE ' + changeline[1] + ' ' + changeline[2] + ' ' + changeline[3] + ' ' + changeline[4] + ' ' + changeline[5] + ' ' + changeline[6] + ' ' + changeline[7] + ' ' + changeline[8] + ' ' + data[6] + ' ' + data[7]
                                 swrite = ''
-                                f = open('gtv_lite.txt', 'w')
+                                f = open(dbfile, 'w')
                                 for i in range(0,len(lines)):
                                     swrite = swrite + lines[i]
                                 f.write(swrite)
@@ -179,7 +186,7 @@ while True:
                                 irc.send('PRIVMSG ' + channel + ' :GTV ID not found\n')
 
                     elif data[4] == "list":
-                        fileHandle = open('gtv_lite.txt')
+                        fileHandle = open(dbfile)
                         read = fileHandle.read()
                         fileHandle.close()
                         read = read.split("\n")
@@ -201,7 +208,7 @@ while True:
                             irc.send('PRIVMSG ' + channel + ' :No upcoming GTV\n')
 
                     elif data[4] == "free":
-                        fileHandle = open('gtv_lite.txt')
+                        fileHandle = open(dbfile)
                         read = fileHandle.read()
                         fileHandle.close()
                         read = read.split("\n")
@@ -224,14 +231,14 @@ while True:
 
                     elif data[4] == "take":
                         if len(data) == 7:
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) > int(data[5]):
                                 changeline = lines[int(data[5])].split(" ")
                                 lines[int(data[5])] =  'PUB ' + changeline[1] + ' ' + changeline[2] + ' ' + changeline[3] + ' ' + changeline[4] + ' ' + changeline[5] + ' ' + changeline[6] + ' ' + data[6] + ' ' + changeline[8] + ' ' + changeline[9] + ' ' + changeline[10]
                                 swrite = ''
-                                f = open('gtv_lite.txt', 'w')
+                                f = open(dbfile, 'w')
                                 for i in range(0,len(lines)):
                                     swrite = swrite + lines[i]
                                 f.write(swrite)
@@ -244,14 +251,14 @@ while True:
 
                     elif data[4] == "remove":
                         if len(data) == 6:
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) > int(data[5]):
                                 changeline = lines[int(data[5])].split(" ")
                                 lines[data[5]] =  'PRIV ' + changeline[1] + ' ' + changeline[2] + ' ' + changeline[3] + ' ' + changeline[4] + ' ' + changeline[5] + ' ' + changeline[6] + ' ' + changeline[7] + ' ' + changeline[8] + ' ' + changeline[9] + ' ' + changeline[10]
                                 swrite = ''
-                                f = open('gtv_lite.txt', 'w')
+                                f = open(dbfile, 'w')
                                 for i in range(0,len(lines)):
                                     swrite = swrite + lines[i]
                                 f.write(swrite)
@@ -264,14 +271,14 @@ while True:
 
                     elif data[4] == "streamadd":
                         if len(data) == 7:
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) > int(data[5]):
                                 changeline = lines[int(data[5])].split(" ")
                                 lines[int(data[5])] =  changeline[0] + ' ' + changeline[1] + ' ' + changeline[2] + ' ' + changeline[3] + ' ' + changeline[4] + ' ' + changeline[5] + ' ' + changeline[6] + ' ' + changeline[7] + ' ' + data[6] + ' ' + changeline[9] + ' ' + changeline[10]
                                 swrite = ''
-                                f = open('gtv_lite.txt', 'w')
+                                f = open(dbfile, 'w')
                                 for i in range(0,len(lines)):
                                     swrite = swrite + lines[i]
                                 f.write(swrite)
@@ -284,14 +291,14 @@ while True:
 
                     elif data[4] == "streamremove":
                         if len(data) == 6:
-                            f = open('gtv_lite.txt', 'r')
+                            f = open(dbfile, 'r')
                             lines = f.readlines()
                             f.close()
                             if len(lines) > int(data[5]):
                                 changeline = lines[int(data[5])].split(" ")
                                 lines[int(data[5])] = changeline[0] + ' ' + changeline[1] + ' ' + changeline[2] + ' ' + changeline[3] + ' ' + changeline[4] + ' ' + changeline[5] + ' ' + changeline[6] + ' ' + changeline[7] + ' 0 ' + changeline[9] + ' ' + changeline[10]
                                 swrite = ''
-                                f = open('gtv_lite.txt', 'w')
+                                f = open(dbfile, 'w')
                                 for i in range(0,len(lines)):
                                     swrite = swrite + lines[i]
                                 f.write(swrite)
@@ -303,9 +310,8 @@ while True:
                             irc.send('PRIVMSG ' + channel + ' :GTV take: !gtv streamremove <id>\n')
                             
                     elif data[4] == "servers":
-                        irc.send('PRIVMSG ' + channel + ' :GTV #1 IP: gtv1.urt-tv.org:27973 - Admin: 1p/GFBm7 - Camera: 2sSmh+Uy\n')
-                        irc.send('PRIVMSG ' + channel + ' :GTV #2 IP: gtv1.urt-tv.org:27970 - Admin: 1p/GFBm7 - Camera: 2sSmh+Uy\n')
-                        irc.send('PRIVMSG ' + channel + ' :GTV #3 IP: liq-urt.de:30000 - Admin: thisisacreativepassword123 - Camera: thisisacreativepassword456\n')
+                        irc.send('PRIVMSG ' + channel + ' :GTV #1 IP: gtv1.urt-tv.org:27973 - Admin: xxx - Camera: xxx\n')
+                        irc.send('PRIVMSG ' + channel + ' :GTV #2 IP: gtv1.urt-tv.org:27970 - Admin: xxx - Camera: xxx\n')
 
     except socket.error:
         continue
