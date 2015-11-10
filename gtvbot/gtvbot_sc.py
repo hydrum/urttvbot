@@ -13,9 +13,9 @@ REALNAME="GTV-Bot"
 text=""
 channel="#urt-tv"
 OWNER="~gost0r@Gost0r.users.quakenet.org"
-admins="~gost0r ~Azle_"
+admins="~gost0r ~Biddle ~Sc`SailorMoon"
 
-ts3ip = "62.75.246.191:9991"
+ts3ip = "ts.urt-tv.org"
 
 
 sql_host = "xxx"
